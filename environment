@@ -1,0 +1,19 @@
+#!/bin/bash
+set -euo pipefail
+
+if [[ "$BUILDKITE_PIPELINE_SLUG" == "datum" && ("$BUILDKITE_STEP_KEY" == "scan-upload" || "$BUILDKITE_STEP_KEY" == "scan-upload-pr") ]]; then
+# KEYS NEED TO BE PLACED IN HERE FROM THE DECRYPTED FILE
+  export GITHUB_TOKEN=""
+  export SONAR_TOKEN=""
+fi
+
+if [[ "$BUILDKITE_PIPELINE_SLUG" == "datum" && ("$BUILDKITE_STEP_KEY" == "gosec-upload" || "$BUILDKITE_STEP_KEY" == "gosec-upload-pr") ]]; then
+# KEYS NEED TO BE PLACED IN HERE FROM THE DECRYPTED FILE
+  export GITHUB_TOKEN=""
+  export SONAR_TOKEN=""
+fi
+
+if [[ "$BUILDKITE_PIPELINE_SLUG" == "datum" && "$BUILDKITE_STEP_KEY" == docker-"build" ]]; then
+# KEYS NEED TO BE PLACED IN HERE FROM THE DECRYPTED FILE
+  export SECRET_GHCR_PUBLISH_TOKEN=""
+fi
