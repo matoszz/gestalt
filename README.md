@@ -4,20 +4,36 @@ a `gestalt` is something that is made of many parts and yet is somehow more than
 
 This repo is setup currently to support Ubuntu 22+ as the primary operating system, and additional operating systems may be added in the future.
 
+## Download and Setup
+
+```
+sudo apt install age
+sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
+curl -LkSs https://api.github.com/repos/datumforge/gestalt/tarball -o gestalt.tar.gz
+sudo mkdir gestalt
+tar -xvf gestalt.tar.gz --strip-components=1 -C gestalt
+cd gestalt
+age -d .env.age >> .env
+```
+Then enter the passphrase. Once this is done, run:
+
+- task dockerinstall
+- task privs
+- task setupssh
+- task gcloud
+- task scriptperms
+
 ## Secrets
 
-The `.env.age` file in this repository is encrypted using [age](https://github.com/FiloSottile/age); you can setup `task` as outlined below and run `task install:age` or simply run `apt install age` on the server, or decrypt the file locally vs. moving to the server. In either case, you'll need to run `age -d .env.age` and enter the passphrase which will print out the secret values required for the scripts / installation. The areas today which require secrets are:
+The `.env.age` file in this repository is encrypted using [age](https://github.com/FiloSottile/age); you can setup `task` as outlined below and run `task install:age` or simply run `apt install age` on the server, or decrypt the file locally vs. moving to the server. In either case, you'll need to run `age -d .env.age` and enter the passphrase which will print out the secret values required for the scripts / installation.
 
-- `environment` shell script
-- `BUILDKITE_AGENT_TOKEN` variable in `task install:buildkite`
+### Encrypting an .env file
 
-## Taskfile
+Create a new file or update the existing by first decrypting it per the steps above. Whenever you're ready to encrypt, simply run the `age` command and if the desire is to use a passphrase like is currently setup for (since the repo is intended to be cloned onto a server which may or may not be able to have / use different keys or otherwise) you can run:
 
-A pre-requisite to running any of the installation steps requires setup of [Taskfile](https://taskfile.dev/installation/), which should be as easy as running the below script:
 
 ```
-sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d
+age -p .env > env.age
+age -d .env.age >> .env-mitb
 ```
-(by default, this installs on the ``./bin`` directory relative to the working directory)
 
-Once Taskfile is setup, you'll also need to get the contents of this repository onto the server via clone, or curl.
