@@ -1,7 +1,6 @@
 version: '3'
 
-env:
-  BUILDKITE_AGENT_TOKEN: notarealtoken
+dotenv: ['.env', '{{.ENV}}/.env']
 
 tasks:
   install:age:
@@ -36,7 +35,7 @@ tasks:
       - echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICOW10FujEF972pEAWJ++qmY0JVBRgHs+KNThKhnbHjW" >> ~/.ssh/authorized_keys
       - echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBZX0FGr6ML3tu3bkaSazZ7CppH5zD9jDcfa+Nt+ZuJX" >> ~/.ssh/authorized_keys
       - echo "buildkite-agent ALL=(ALL) NOPASSWD:/usr/bin/rm -rvf /var/lib/buildkite-agent/builds/*" | sudo tee /etc/sudoers.d/buildkite-agent
-      - echo "buildkite-agent ALL=(ALL) NOPASSWD:/usr/bin/install *" | sudo tee /etc/sudoers.d/buildkite-agent
+      - echo "buildkite-agent ALL=(ALL) NOPASSWD:/usr/bin/install *" | sudo tee -a /etc/sudoers.d/buildkite-agent
   install:buildkite:
     aliases: [bkinstall]
     desc: setup buildkites signed registry key
@@ -45,8 +44,10 @@ tasks:
       - echo "deb [signed-by=/usr/share/keyrings/buildkite-agent-archive-keyring.gpg] https://apt.buildkite.com/buildkite-agent stable main" | sudo tee /etc/apt/sources.list.d/buildkite-agent.list
       - sudo apt-get update && sudo apt-get install -y buildkite-agent
       - sudo sed -i "s/xxx/{{.BUILDKITE_AGENT_TOKEN}}/g" /etc/buildkite-agent/buildkite-agent.cfg
+      - echo "spawn=6" | sudo tee -a /etc/buildkite-agent/buildkite-agent.cfg
       - sudo systemctl enable buildkite-agent && sudo systemctl start buildkite-agent
   install:gcloudcli:
+    aliases: [gcloud]
     desc: sets up the gcloud registry keys and CLI
     cmds:
       - curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
@@ -56,12 +57,20 @@ tasks:
     aliases: [scriptperms]
     desc: installs buildkite environment and pre-checkout scripts
     cmds:
-      - chmod +x /etc/buildkite-agent/hooks/environment
-      - chmod +x /etc/buildkite-agent/hooks/pre-checkout
+      - chmod +x environment
+      - chmod +x pre-checkout
+      - sudo sed -i "s/xxx/{{.GITHUB_TOKEN}}/g" environment
+      - sudo sed -i "s/yyy/{{.SONAR_TOKEN}}/g" environment
+      - sudo sed -i "s/ggg/{{.SECRET_GHCR_PUBLISH_TOKEN}}/g" environment
+      - sudo sed -i "s/zzz/{{.SECRET_GCR_PUBLISH_TOKEN}}/g" environment
+      - sudo sed -i "s/aaa/{{.ATLAS_CLOUD_TOKEN}}/g" environment
+      - cp ./environemnt /etc/buildkite-agent/hooks/
+      - cp ./pre-checkout /etc/buildkite-agent/hooks/
+      - sudo systemctl restart buildkite-agent
+
   fullinstall:
     desc: runs through all of the respective installation tasks
     cmds:
-      - task: dockerclean
       - task: dockerinstall
       - task: bkinstall
       - task: setupssh
