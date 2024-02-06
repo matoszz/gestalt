@@ -15,7 +15,7 @@ fi
 
 if [[ ("$BUILDKITE_STEP_KEY" == "docker-build" || "$BUILDKITE_STEP_KEY" == "docker-build-aio") ]]; then
 # KEYS NEED TO BE PLACED IN HERE FROM THE DECRYPTED FILE
-  export SECRET_GHCR_PUBLISH_TOKEN="aaa"
+  export SECRET_GHCR_PUBLISH_TOKEN="ggg"
 fi
 
 if [[ ("$BUILDKITE_STEP_KEY" == "docker-build" || "$BUILDKITE_STEP_KEY" == "docker-build-aio") ]]; then

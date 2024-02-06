@@ -43,9 +43,7 @@ tasks:
       - curl -fsSL https://keys.openpgp.org/vks/v1/by-fingerprint/32A37959C2FA5C3C99EFBC32A79206696452D198 | sudo gpg --dearmor -o /usr/share/keyrings/buildkite-agent-archive-keyring.gpg
       - echo "deb [signed-by=/usr/share/keyrings/buildkite-agent-archive-keyring.gpg] https://apt.buildkite.com/buildkite-agent stable main" | sudo tee /etc/apt/sources.list.d/buildkite-agent.list
       - sudo apt-get update && sudo apt-get install -y buildkite-agent
-      - sudo sed -i "s/xxx/{{.BUILDKITE_AGENT_TOKEN}}/g" /etc/buildkite-agent/buildkite-agent.cfg
-      - echo "spawn=6" | sudo tee -a /etc/buildkite-agent/buildkite-agent.cfg
-      - sudo systemctl enable buildkite-agent && sudo systemctl start buildkite-agent
+      - sudo systemctl enable buildkite-agent
   install:gcloudcli:
     aliases: [gcloud]
     desc: sets up the gcloud registry keys and CLI
@@ -61,18 +59,21 @@ tasks:
       - chmod +x pre-checkout
       - sudo sed -i "s/xxx/{{.GITHUB_TOKEN}}/g" environment
       - sudo sed -i "s/yyy/{{.SONAR_TOKEN}}/g" environment
-      - sudo sed -i "s/ggg/{{.SECRET_GHCR_PUBLISH_TOKEN}}/g" environment
+      - sudo sed -i "s/ggg/\{{.SECRET_GHCR_PUBLISH_TOKEN}}/g" environment
       - sudo sed -i "s/zzz/{{.SECRET_GCR_PUBLISH_TOKEN}}/g" environment
-      - sudo sed -i "s/aaa/{{.ATLAS_CLOUD_TOKEN}}/g" environment
-      - cp ./environemnt /etc/buildkite-agent/hooks/
-      - cp ./pre-checkout /etc/buildkite-agent/hooks/
-      - sudo systemctl restart buildkite-agent
+      - sudo sed -i "s/aaa/\{{.ATLAS_CLOUD_TOKEN}}/g" environment
+      - cp environment /etc/buildkite-agent/hooks/
+      - cp pre-checkout /etc/buildkite-agent/hooks/
+      - sudo sed -i "s/xxx/{{.BUILDKITE_AGENT_TOKEN}}/g" /etc/buildkite-agent/buildkite-agent.cfg
+      - echo "spawn=6" | sudo tee -a /etc/buildkite-agent/buildkite-agent.cfg
+      - sudo systemctl start buildkite-agent
 
   fullinstall:
     desc: runs through all of the respective installation tasks
     cmds:
       - task: dockerinstall
-      - task: bkinstall
-      - task: setupssh
       - task: privs
+      - task: setupssh
+      - task: gcloud
+      - task: bkinstall
       - task: scriptperms

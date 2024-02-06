@@ -21,6 +21,7 @@ Then enter the passphrase. Once this is done, run:
 - task privs
 - task setupssh
 - task gcloud
+- task bkinstall
 - task scriptperms
 
 ## Secrets
