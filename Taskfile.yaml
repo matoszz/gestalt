@@ -7,6 +7,11 @@ tasks:
     desc: install age, an encryption / decryption tool
     cmds:
       - apt install age
+  install:jq:
+    aliases: [jqinstall]
+    desc: install jq
+    cmds:
+      - sudo apt-get install jq
   install:docker:
     aliases: [dockerinstall]
     desc: pulls down the docker installation script and runs it
@@ -71,6 +76,7 @@ tasks:
   fullinstall:
     desc: runs through all of the respective installation tasks
     cmds:
+      - task: jqinstall
       - task: dockerinstall
       - task: privs
       - task: setupssh
