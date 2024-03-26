@@ -1,29 +1,17 @@
 #!/bin/bash
 set -euo pipefail
 
-if [[ ("$BUILDKITE_STEP_KEY" == "scan-upload" || "$BUILDKITE_STEP_KEY" == "scan-upload-pr") ]]; then
 # KEYS NEED TO BE PLACED IN HERE FROM THE DECRYPTED FILE
-  export GITHUB_TOKEN="xxx"
-  export SONAR_TOKEN="yyy"
-fi
+export GITHUB_TOKEN="xxx"
 
-if [[ ("$BUILDKITE_STEP_KEY" == "scan-upload" || "$BUILDKITE_STEP_KEY" == "scan-upload-pr") ]]; then
-# KEYS NEED TO BE PLACED IN HERE FROM THE DECRYPTED FILE
-  export GITHUB_TOKEN="xxx"
-  export SONAR_TOKEN="yyy"
-fi
+export SONAR_TOKEN="yyy"
 
-if [[ ("$BUILDKITE_STEP_KEY" == "docker-build" || "$BUILDKITE_STEP_KEY" == "docker-build-aio") ]]; then
-# KEYS NEED TO BE PLACED IN HERE FROM THE DECRYPTED FILE
-  export SECRET_GHCR_PUBLISH_TOKEN="ggg"
-fi
+export SECRET_GHCR_PUBLISH_TOKEN="ggg"
 
-if [[ ("$BUILDKITE_STEP_KEY" == "docker-build" || "$BUILDKITE_STEP_KEY" == "docker-build-aio") ]]; then
-# KEYS NEED TO BE PLACED IN HERE FROM THE DECRYPTED FILE
-  export SECRET_GCR_PUBLISH_TOKEN="zzz"
-fi
+export SECRET_GCR_PUBLISH_TOKEN="zzz"
 
-if [[ ("$BUILDKITE_STEP_KEY" == "atlas_lint" || "$BUILDKITE_STEP_KEY" == "atlas_migrate") ]]; then
-# KEYS NEED TO BE PLACED IN HERE FROM THE DECRYPTED FILE
-  export ATLAS_CLOUD_TOKEN="aaa"
-fi
+export ATLAS_CLOUD_TOKEN="aaa"
+
+export APOLLO_KEY="bbb"
+
+export TURSO_TOKEN="ttt"

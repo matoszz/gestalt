@@ -67,6 +67,8 @@ tasks:
       - sudo sed -i "s/ggg/\{{.SECRET_GHCR_PUBLISH_TOKEN}}/g" environment
       - sudo sed -i "s/zzz/{{.SECRET_GCR_PUBLISH_TOKEN}}/g" environment
       - sudo sed -i "s/aaa/\{{.ATLAS_CLOUD_TOKEN}}/g" environment
+      - sudo sed -i "s/bbb/\{{.APOLLO_KEY}}/g" environment
+      - sudo sed -i "s/ttt/\{{.TURSO_TOKEN}}/g" environment
       - cp environment /etc/buildkite-agent/hooks/
       - cp pre-checkout /etc/buildkite-agent/hooks/
       - sudo sed -i "s/xxx/{{.BUILDKITE_AGENT_TOKEN}}/g" /etc/buildkite-agent/buildkite-agent.cfg
